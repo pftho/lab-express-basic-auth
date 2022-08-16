@@ -32,14 +32,34 @@ router.post("/signup", (req, res) => {
 
 //LOGIN
 
-router.get("/login", (req, res) => {});
+router.get("/login", (req, res) => {
+  res.render("auth/login");
+});
 
-router.post("/login", (req, res) => {});
+router.post("/login", (req, res) => {
+  const { username, password } = req.body;
 
-module.exports = router;
+  User.findOne({ username })
+    .then((user) => {
+      if (!user) {
+        res.render("auth/login", {
+          errorMessage: "Email is not registered. Try with other email.",
+        });
+        return;
+      } else if (bcrypt.compareSync(password, user.password)) {
+        req.session.currentUser = user;
+        res.redirect("/auth/profile");
+      } else {
+        res.render("auth/login", { erroMessage: "Incorrect Password" });
+      }
+    })
+    .catch((err) => console.log(err));
+});
 
 //PROFILE PAGE
 router.get("/profile", (req, res) => {
   const { username } = req.session.currentUser;
   res.render("auth/profile", { username });
 });
+
+module.exports = router;
