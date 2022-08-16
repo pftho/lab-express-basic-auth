@@ -18,12 +18,14 @@ router.post("/signup", (req, res) => {
     .genSalt(saltRounds)
     .then((salt) => bcrypt.hash(password, salt))
     .then((hashedPassword) => {
-      console.log("hashedPassword", hashedPassword);
+      // console.log("hashedPassword", hashedPassword);
       return User.create({ username, password: hashedPassword });
     })
     .then((userfromDB) => {
-      console.log("userfromDB", userfromDB);
-      res.redirect("auth/profile");
+      // console.log("userfromDB", userfromDB);
+      // console.log("req.session", req.session);
+      req.session.currentUser = userfromDB;
+      res.redirect("/auth/profile");
     })
     .catch((err) => console.log(err));
 });
@@ -38,5 +40,6 @@ module.exports = router;
 
 //PROFILE PAGE
 router.get("/profile", (req, res) => {
-  res.render("auth/profile");
+  const { username } = req.session.currentUser;
+  res.render("auth/profile", { username });
 });
