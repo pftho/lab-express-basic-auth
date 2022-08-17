@@ -7,6 +7,7 @@ const saltRounds = 10;
 //SIGN UP
 
 router.get("/signup", (req, res) => {
+  console.log(req.session);
   res.render("auth/signup");
 });
 
