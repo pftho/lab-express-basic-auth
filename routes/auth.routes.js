@@ -69,13 +69,15 @@ router.get("/profile", (req, res) => {
 //MAIN PAGE
 router.get("/profile/main", isLoggedIn, (req, res) => {
   const { currentUser } = req.session;
-  res.render("main");
+  res.render("main", { currentUser });
 });
 
 //PRIVATE PAGE
 router.get("/profile/private", isLoggedIn, (req, res) => {
   const { currentUser } = req.session;
-  res.render("private");
+  res.render("private", { currentUser });
 });
+
+
 
 module.exports = router;
