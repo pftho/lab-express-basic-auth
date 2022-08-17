@@ -3,6 +3,9 @@ const router = express.Router();
 const User = require("../models/User.model.js");
 const bcrypt = require("bcryptjs");
 const saltRounds = 10;
+const { isLoggedIn } = require("../middleware/route-guard.js");
+
+// ...
 
 //SIGN UP
 
@@ -59,8 +62,20 @@ router.post("/login", (req, res) => {
 
 //PROFILE PAGE
 router.get("/profile", (req, res) => {
-  const { username } = req.session.currentUser;
-  res.render("auth/profile", { username });
+  const { currentUser } = req.session;
+  res.render("auth/profile", currentUser);
+});
+
+//MAIN PAGE
+router.get("/profile/main", isLoggedIn, (req, res) => {
+  const { currentUser } = req.session;
+  res.render("main");
+});
+
+//PRIVATE PAGE
+router.get("/profile/private", isLoggedIn, (req, res) => {
+  const { currentUser } = req.session;
+  res.render("private");
 });
 
 module.exports = router;
